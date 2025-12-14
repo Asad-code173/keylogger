@@ -1,5 +1,3 @@
--- Keylogger Database Schema for Supabase PostgreSQL
--- Run this in Supabase SQL Editor after creating your project
 
 -- ============================================================================
 -- TABLE: keystroke_sessions
