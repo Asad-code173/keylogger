@@ -16,8 +16,8 @@ load_dotenv()
 DATABASE_URL = os.getenv("DATABASE_URL")
 SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
-API_TOKEN = os.getenv("API_TOKEN", "Hfpv9f04J@!29Kk2fla00Asd9(==!3p")
-HMAC_SECRET = os.getenv("HMAC_SECRET", "JSk!f923jfsd0-23jjJJJ(*@23jkdf90J").encode()
+API_TOKEN = os.getenv("API_TOKEN")
+HMAC_SECRET = os.getenv("HMAC_SECRET").encode()
 STORAGE_BUCKET = os.getenv("STORAGE_BUCKET", "screenshots")
 
 # Initialize Supabase client for storage
