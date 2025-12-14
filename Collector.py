@@ -20,8 +20,16 @@ API_TOKEN = os.getenv("API_TOKEN")
 HMAC_SECRET = os.getenv("HMAC_SECRET").encode()
 STORAGE_BUCKET = os.getenv("STORAGE_BUCKET", "screenshots")
 
-# Initialize Supabase client for storage
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
+# Initialize Supabase client lazily
+supabase: Client = None
+
+def get_supabase():
+    global supabase
+    if supabase is None:
+        if not SUPABASE_URL or not SUPABASE_KEY:
+             raise ValueError("Supabase credentials missing")
+        supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+    return supabase
 
 # Database connection pool (serverless-friendly)
 db_pool = None
@@ -160,14 +168,15 @@ def upload_screenshot_to_storage(agent_id, screenshot_bytes, window_title="Unkno
         file_path = f"{agent_id}/{file_name}"
         
         # Upload to Supabase Storage
-        response = supabase.storage.from_(STORAGE_BUCKET).upload(
+        client = get_supabase()
+        response = client.storage.from_(STORAGE_BUCKET).upload(
             file_path,
             screenshot_bytes,
             file_options={"content-type": "image/png"}
         )
         
         # Get public URL
-        storage_url = supabase.storage.from_(STORAGE_BUCKET).get_public_url(file_path)
+        storage_url = client.storage.from_(STORAGE_BUCKET).get_public_url(file_path)
         
         # Store metadata in database
         cursor.execute("""
